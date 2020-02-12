@@ -1,0 +1,68 @@
+
+nav ul ul {
+	display: none;
+}
+
+	nav ul li:hover > ul {
+		display: block;
+	}
+
+
+nav ul {
+	background: #2b3d4f; 	
+	list-style: none;
+	position: relative;
+	border-bottom: 1px solid #cdcdcd;
+	border-left: 1px solid #cdcdcd;
+	border-right: 1px solid #cdcdcd;
+}
+	nav ul:after {
+		content: ""; clear: both; display: block;
+	}
+nav img {
+		padding-top: 12px;
+	}
+	nav ul li {
+		float: left;
+		border-top: 1px solid #6b727c;
+		position: relative;
+	}
+	nav ul li:hover {
+		background: #4b545f;
+		background: linear-gradient(top, #4f5964 0%, #5f6975 40%);
+		background: -moz-linear-gradient(top, #4f5964 0%, #5f6975 40%);
+		background: -webkit-linear-gradient(top, #4f5964 0%,#5f6975 40%);
+		xborder-top: 1px solid #6b727c;
+		xborder-bottom: 1px solid #cdcdcd;
+	}
+		nav b ul li:hover a {
+			color: #e1e8ef;
+			
+		}
+	
+	nav ul li a {
+		display: block; padding: 20px 35px;
+		color: white; text-decoration: none;
+	}
+			
+		
+	nav ul ul {
+		background: white;  padding: 0;
+		position: absolute; top: 100%;
+	}
+		nav ul ul li {
+			float: none; 
+
+		}
+			nav ul ul li a {
+				padding: 15px 40px;
+			}	
+				nav ul ul li a:hover {
+					background: #e1e8ef;
+				}
+		
+	nav ul ul ul {
+		position: absolute; left: 100%; top:0;
+		
+	}
+		

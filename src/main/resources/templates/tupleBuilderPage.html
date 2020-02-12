@@ -1,0 +1,1135 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+
+    <script src='/javascripts/jquery-1.6.4.min.js'></script>
+    <script src='/javascripts/ArcBuilderView.js'></script>
+    <script type="text/javascript" src='/javascripts/jquery-1.9.1.min.js'></script>
+    <script src="/javascripts/jquery-ui-1.10.4.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" charset="utf-8" src='/javascripts/jquery.leanModal.min.js'></script>
+
+    <link rel="stylesheet" type="text/css" media="screen"
+    href="/stylesheets/ArcBuilderView.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="/stylesheets/tags.css" />
+
+
+        <script>
+        function setAvailability(){
+            var tupleData = $("#tupleData").val();
+            if ( tupleData!= null && tupleData.match(/measurements:/)){
+                var left = tupleData.substring(0, tupleData.indexOf('measurements:'));
+                //construct new tupleData with the availability as first  measurement
+                tupleData = left + 'measurements:availability=0;1,' + tupleData.substring(tupleData.indexOf('measurements:') + 13);
+                $("#tupleData").val(tupleData);
+            }
+        }
+    function moveToGenericSender(){
+
+        var EPMOnOtherMachineVal = $("#EPMOnOtherMachineVal").val();
+        if ( EPMOnOtherMachineVal.includes("443")){
+            EPMOnOtherMachineVal = "https://" + EPMOnOtherMachineVal;
+        } else {
+            EPMOnOtherMachineVal = "http://" + EPMOnOtherMachineVal;
+        }
+        var endpointId = $("#endpointId").val();
+
+
+        window.location.assign('/genericSender?urlPrefix=' + EPMOnOtherMachineVal + '&epId=' + endpointId);
+    }
+    function getEPMOnOtherMachineVal() {
+        var EPMOnOtherMachineValue = $("#EPIP").val();
+        if ($('#IsEPMOnOtherMachine').prop("checked") == true && EPMOnOtherMachineValue != null && EPMOnOtherMachineValue.length > 1){
+            $('#EPIP').val($("#EPMOnOtherMachineVal").val());
+        }
+    }
+    $(function(){
+        $('#IsEPMOnOtherMachine').change(function(){
+            if($(this).prop("checked") == true){
+                $( "#divEPMOnOtherMachine" ).show();
+            }
+            else if($(this).prop("checked") == false){
+                $( "#divEPMOnOtherMachine" ).hide();
+            }
+        });
+    });
+    $(function(){
+        $('#IsSession').change(function(){
+            if($(this).prop("checked") == true){
+                $( "#divsessionID" ).show();
+            }
+            else if($(this).prop("checked") == false){
+                $( "#divsessionID" ).hide();
+            }
+        });
+    });
+    $(function(){
+        $('#IsStaticMac').change(function(){
+            $("textarea#staticData").val('Operating System=Mac OS,OS Type=Mac,OS Service Pack=OS X 10.11.4 (15E65),Manufacturer=Apple');
+        });
+    });
+    $(function(){
+        $('#IsTuppleSession').change(function(){
+            if($(this).prop("checked") == true){
+                $( "#divTuppleSessionID" ).show();
+            }
+            else if($(this).prop("checked") == false){
+                $( "#divTuppleSessionID" ).hide();
+            }
+        });
+    });
+    $(function(){
+        $('#EPDevice').change(function(){
+            var selectedValue = $(this).find(":selected").val();
+            if (selectedValue == 999 ){
+                $( "#numberOfSessionsDiv" ).show();
+                $( "#multipleUsersPerSessionDiv" ).show();
+
+            } else {
+                $( "#numberOfSessionsDiv" ).hide();
+                $( "#multipleUsersPerSessionDiv" ).hide();
+            }
+            if (selectedValue == 7 ){
+                $( "#agentVersion" ).val("MAG2.0");
+            } else {
+                $( "#agentVersion" ).val("AG9.1");
+            }
+        });
+    });
+    $(function(){
+        $('#EP').submit(function(e){
+            return false;
+        });
+
+        $('#EPtrigger').leanModal({ top: 110, overlay: 0.45, closeButton: ".hidemodal" });
+    });
+    $(function(){
+        $('#Statics').submit(function(e){
+            return false;
+        });
+
+        $('#Staticstrigger').leanModal({ top: 150, overlay: 0.45, closeButton: ".hidemodal" });
+    });
+    $(function(){
+        $('#').submit(function(e){
+            return false;
+        });
+
+        $('#mobileAttrtrigger').leanModal({ top: 150, overlay: 0.45, closeButton: ".hidemodal" });
+    });
+    $(function(){
+        $('#mobileActivityDiv').submit(function(e){
+            return false;
+        });
+
+        $('#mobileActivitytrigger').leanModal({ top: 150, overlay: 0.45, closeButton: ".hidemodal" });
+    });
+    $(function(){
+        $('#loginform').submit(function(e){
+            return false;
+        });
+
+        $('#modaltrigger').leanModal({ top: 110, overlay: 0.45, closeButton: ".hidemodal" });
+    });
+
+    $(function(){
+        $("#accountNames").change(function(){
+            var selectedValue = $(this).find(":selected").val();
+            $("#appTypes").change();
+            $("#applications").change();
+
+            var selectedAccount = $('#accountNames').find(":selected").text();
+            $('#EPAccount').val(selectedAccount).prop('selected', true);
+        });
+    });
+    $(function(){
+        $("#appTypes").change(function(){
+            var selectedValue = $(this).find(":selected").val();
+
+            $.ajax({
+                type: "GET",
+                url:'/ArcTupleBuilder?query=application&accountName=' + $( "#accountNames option:selected" ).text() + '&appType=' + selectedValue +'&epmIP=' + $("#epmIP").val() + '&dbUser=' + $("#dbUser").val() +'&dbPassword=' + $("#dbPassword").val(),
+                data: {},
+                dataType:'json',
+                success: function(data) {
+
+                    var select = $("#applications"), options = '';
+                    select.empty();
+
+                    for(var i=0;i<data.length; i++)
+                    {
+                        options += "<option value='"+data[i]+"'>"+ data[i] +"</option>";
+                    }
+                    select.append(options);
+                    if ( i == 1){
+                        $("#applications").change();
+                    }
+                    var selectActivity = $("#activity"), options = '';
+                    selectActivity.empty();
+                    $("textarea#contectuals").val("");
+                    $("textarea#measurments").val("");
+                    $("textarea#tupleData").val("");
+                }
+            });
+
+
+        });
+    });
+
+    $(function(){
+        $("#applications").change(function(){
+            var selectedValue = $(this).find(":selected").val();
+            if (selectedValue!= null && selectedValue.includes("+")){
+                selectedValue=selectedValue.replace(/\+/g, '%2B');
+            }
+
+            $.ajax({
+                type: "GET",
+                url:'/ArcTupleBuilder?query=activity&accountName=' + $( "#accountNames option:selected" ).text() + '&epmIP=' + $("#epmIP").val() + '&dbUser=' + $("#dbUser").val() +'&dbPassword=' + $("#dbPassword").val() + '&appType=' + $( "#appTypes" ).val() +'&application=' + selectedValue,
+                data: {},
+                dataType:'json',
+                success: function(data) {
+
+                    var select = $("#activity"), options = '';
+                    select.empty();
+
+                    for(var i=0;i<data.length; i++)
+                    {
+                        options += "<option value='"+data[i]+"'>"+ data[i] +"</option>";
+                    }
+                    select.append(options);
+                    // $("textarea#contectuals").val("");
+                    //$("textarea#measurments").val(""");
+                    $("#activity").change();
+                }
+            });
+
+
+        });
+    });
+
+    $(function(){
+        $("#MobileMonitorSelect").change(function(){
+            var selectedValue = $(this).find(":selected").val();
+
+            $.ajax({
+                type: "GET",
+                url:'/ArcTupleBuilder?query=MobileActivity&accountName=' + $( "#accountNames option:selected" ).text() + '&epmIP=' + $("#epmIP").val() + '&dbUser=' + $("#dbUser").val() +'&dbPassword=' + $("#dbPassword").val()  +'&application=' + selectedValue,
+                data: {},
+                dataType:'json',
+                success: function(data) {
+
+                    var select = $("#MobileActivitySelect"), options = '';
+                    select.empty();
+
+                    for(var i=0;i<data.length; i++)
+                    {
+                        options += "<option value='"+data[i]+"'>"+ data[i] +"</option>";
+                    }
+                    select.append(options);
+                }
+            });
+
+
+        });
+    });
+    $(function(){
+        $("#activity").change(function(){
+            var selectedValue = $(this).find(":selected").val();
+            if (selectedValue != null && selectedValue.includes("+")){
+                selectedValue=selectedValue.replace(/\+/g, '%2B');
+            }
+            var app = $( "#applications" ).val();
+            if (app != null && app.includes("+")){
+                app=app.replace(/\+/g, '%2B');
+            }
+            $.ajax({
+                type: "GET",
+                url:'/ArcTupleBuilder?query=contextuals&epmIP=' + $("#epmIP").val() + '&dbUser=' + $("#dbUser").val() +'&dbPassword=' + $("#dbPassword").val() + '&appType=' + $( "#appTypes" ).val() +'&application=' + app + '&activity=' +selectedValue,
+                data: {},
+                dataType:'json',
+                success: function(data) {
+
+                    var 	contectualsFromServer = "";
+                    for(var i=0;i<data.length; i++)
+                    {
+                        contectualsFromServer +=  data[i] + "\n";
+                    }
+                    $("textarea#contectuals").val(contectualsFromServer);
+                }
+            });
+
+            $.ajax({
+                type: "GET",
+                url:'/ArcTupleBuilder?query=measurments&epmIP=' + $("#epmIP").val() + '&dbUser=' + $("#dbUser").val() +'&dbPassword=' + $("#dbPassword").val() + '&appType=' + $( "#appTypes" ).val() +'&application=' + app + '&activity=' +selectedValue,
+                data: {},
+                dataType:'json',
+                success: function(data) {
+
+                    var 	measurmentsFromServer = "";
+                    for(var i=0;i<data.length; i++)
+                    {;
+                        measurmentsFromServer +=  data[i] + "\n";
+                    }
+                    $("textarea#measurments").val(measurmentsFromServer);
+                    generateTuple();
+                    var tuple = getArcData();
+                    $('#content').text(tuple);
+                }
+            });
+
+        });
+    });
+    $(function(){
+        $("#EPAccount").change(function(){
+            var selectedAccount = $('#EPAccount').find(":selected").text();
+            $('#accountNames').val(selectedAccount).prop('selected', true);
+        });
+    });
+
+    $(function(){
+        $("#StaticValues").change(function(){
+            $('#staticValue').val('[VALUE]');
+        });
+    });
+
+    $(function() {
+        $("#deviceResources").on("change",function() {
+            var selectedValue = $(this).find(":selected").val();
+
+            $.ajax({
+                type: "GET",
+                url:'/getMobileAttributesOptionsByDevice?device=' + selectedValue,
+                data: {},
+                dataType:'text',
+                success: function(data) {
+
+                    var select = $("#subDeviceResources"), options = '';
+                    select.empty();
+
+                    var subDevices = data.split(',');
+
+                    for(var i=0;i<subDevices.length; i++)
+                    {
+                        options += "<option value='"+subDevices[i]+"'>"+ subDevices[i] +"</option>";
+                    }
+                    select.append(options);
+                }
+            });
+
+        });
+    });
+    $(function() {
+        $("#subDeviceResources").on("change",function() {
+            var selectedValue = $(this).find(":selected").val();
+            if (selectedValue.includes("All-")){
+                $.ajax({
+                    type: "GET",
+                    url:'/getDefaultValueByDeviceResource?device=' + selectedValue.split("All-")[1].split("=")[0],
+                    data: {},
+                    dataType:'text',
+                    success: function(data) {
+                        $("#DeviceResourceValue").val(data);
+                    }
+                });
+            }
+        });
+    });
+    </script>
+    <script>
+        function generateTuple() {
+
+            var message = $("#appTypes").val() + "," + $("#applications").val() + ","  + $("#activity").val() + ",measurements:";
+            var measurementsLines = $("textarea#measurments").val().split('\n');
+            for(var i = 0;i < measurementsLines.length;i++){
+                if (measurementsLines[i].length > 1){
+                    message += measurementsLines[i] + "=[VALUE],";
+                }
+
+            }
+            message +=  "CONTEXTUALS:";
+            var contectualLines = $("textarea#contectuals").val().split('\n');
+            for(var i = 0;i < contectualLines.length;i++){
+                if (contectualLines[i].length > 1){
+                    message += contectualLines[i] + "=[VALUE],";
+                }
+
+            }
+            if (!message.endsWith("CONTEXTUALS:")){
+                message = message.substring(0, message.length -1);
+            }
+            $("textarea#tupleData").val(message);
+        }
+
+    </script>
+    <script type="text/javascript">
+
+
+
+        function getArcData() {
+            var postData = {};
+
+            postData["accountName"] =  $( "#accountNames option:selected" ).text();
+            postData["epmIP"] =  $("#epmIP").val();
+            postData["dbUser"] =  $("#dbUser").val();
+            postData["dbPassword"] =  $("#dbPassword").val();
+            postData["data"] =  $("textarea#tupleData").val();
+
+            $.ajax({
+                type: "POST",
+                url:'/getTupleMessage'  ,
+                data: {postData},
+                dataType:'text',
+                success: function(data) {
+                    $("#content").text(data);
+                    $("#loginmodal").text(data);
+                    return data;
+                }
+            });
+
+        }
+        function openDialog(element) {
+            //var tuple = getArcData();
+            // $('#content').text(tuple);
+            // $('#dialog').text(tuple);
+
+            $('#overlay').css('height', $(document.body).height() + 'px')
+            $('#overlay').show()
+            $('#dialog').html($(element).html())
+            centerMe('#dialog')
+            $('#dialog').show();
+        }
+
+        function closeDialog() {
+            $('#overlay').hide();
+            $('#dialog').hide().html('');
+        }
+
+        function testCMConenction (){
+            var epmIp = $( "#configNames option:selected" ).val().split("|")[1];
+            var dbUser = $( "#configNames option:selected" ).val().split("|")[2];
+            var dbPassword = $( "#configNames option:selected" ).val().split("|")[3];
+            var EPMOnOtherMachineVal = $( "#configNames option:selected" ).val().split("|")[0];
+            var config = $( "#configNames option:selected" ).text();
+
+            var url = "/builder?config=" + config + "&testConnection=true&EPMOnOtherMachineVal=" + EPMOnOtherMachineVal + "&epmIP=" +epmIp + '&dbUser=' + dbUser +'&dbPassword=' + dbPassword;
+
+            window.location.assign(url);
+
+        }
+
+        function testConenction (){
+            var EPMOnOtherMachineVal = "";
+            if ($('#IsEPMOnOtherMachine').is(":checked")){
+                EPMOnOtherMachineVal = $('#EPMOnOtherMachineVal').val();
+            }
+
+            var url = "/builder?testConnection=true&EPMOnOtherMachineVal=" + EPMOnOtherMachineVal + "&accountName=" +
+                $( "#accountNames option:selected" ).text() + "&epmIP=" + $("#epmIP").val() + '&dbUser=' + $("#dbUser").val() +'&dbPassword=' + $("#dbPassword").val();
+            window.location.assign(url);
+
+        }
+        function centerMe(element) {
+            //pass element name to be centered on screen
+            var pWidth = $(window).width();
+            var pTop = $(window).scrollTop()
+            var eWidth = $(element).width()
+            var height = $(element).height()
+            $(element).css('top', '130px')
+            //$(element).css('top',pTop+100+'px')
+            $(element).css('left', parseInt((pWidth / 2) - (eWidth / 2)) + 'px')
+        }
+
+        function addMobileDevice  () {
+            var deviceResources = 	$('#deviceResources :selected').text();
+            var subDeviceResources = 	$('#subDeviceResources :selected').text();
+            var value = $('#DeviceResourceValue').val();
+
+            var addedVal =  deviceResources + "_" + subDeviceResources.split("=")[1] + "=" + value ;
+            if (addedVal.includes("All-")){
+                addedVal = value;
+            }
+
+            var newStaticAttr = 	 $("textarea#deviceResourcestextarea").val() + ","  + addedVal;
+            if (newStaticAttr.indexOf(',') == 0){
+                newStaticAttr = newStaticAttr.substring(1);
+            }
+            $("textarea#deviceResourcestextarea").val(newStaticAttr);
+        }
+        function addMobileAttrValue () {
+            var staticAttr = 	$('#MobileAttrValues :selected').text();
+            var staticValue = $('#MobileAttrValue').val();
+            var addedVal = staticAttr + "=" + staticValue ;
+            var newStaticAttr = 	 $("textarea#mobileAttrtextarea").val() + "," + addedVal;
+            if (newStaticAttr.indexOf(',') == 0){
+                newStaticAttr = newStaticAttr.substring(1);
+            }
+            $("textarea#mobileAttrtextarea").val(newStaticAttr);
+            $("textarea#mobileAttrActivitytextarea").val(newStaticAttr);
+        }
+
+        function addMobileAttrActivityValue () {
+            var staticAttr = 	$('#MobileAttrActivityValues :selected').text();
+            var staticValue = $('#MobileAttrActivityValue').val();
+            var addedVal = staticAttr + "=" + staticValue ;
+            var newStaticAttr = 	 $("textarea#mobileAttrActivitytextarea").val() + "," + addedVal;
+            if (newStaticAttr.indexOf(',') == 0){
+                newStaticAttr = newStaticAttr.substring(1);
+            }
+            $("textarea#mobileAttrActivitytextarea").val(newStaticAttr);
+            $("textarea#mobileAttrtextarea").val(newStaticAttr);
+        }
+        function addStatic () {
+            var staticAttr = 	$('#StaticValues :selected').text();
+            var staticValue = $('#staticValue').val();
+            if (staticValue.match(/,/)){
+                staticValue = staticValue.replace(/,/g,'&&&');
+                $('#addStatic').after('<font color="green"><div id="successStaticSave">Comma is replaced with &&& for escaping issues</div></font>');
+                $('#successStaticSave').delay(2500).fadeOut();
+            }
+            var newStaticAttr = 	 $("textarea#staticData").val() + "," + staticAttr +"=" + staticValue;
+            if (newStaticAttr.indexOf(',') == 0){
+                newStaticAttr = newStaticAttr.substring(1);
+            }
+            $("textarea#staticData").val(newStaticAttr);
+        }
+
+        function addAllStatics(){
+            var all ='[[${allStatics}]]';
+            $("textarea#staticData").val(all);
+        }
+
+        function addAllMobileAttrValues(){
+            var all = '[[${defaultMobileAttr}]]';
+            $("textarea#mobileAttrtextarea").val(all);
+        }
+        function addAllMobileAttrActivityValues(){
+            var all = '[[${defaultMobileAttr}]]';
+            $("textarea#mobileAttrActivitytextarea").val(all);
+        }
+
+        function clearAllStatics(){
+            $("textarea#staticData").val('');
+        }
+        function clearAllmobileAttr(){
+            $("textarea#mobileAttrtextarea").val('');
+        }
+        function clearAllmobileAttrActivity(){
+            $("textarea#mobileAttrActivitytextarea").val('');
+        }
+
+        function clearAllDeviceResource(){
+            $("textarea#deviceResourcestextarea").val('');
+        }
+
+        function sendMobileActivity () {
+            if ($("#OIDValue1").val().length < 1){
+                alert('Please set OID for connected mobile device');
+            } else
+            {
+                var allMobileAttr = $('textarea#mobileAttrActivitytextarea').val()
+                var userSelected = $('#MobileActivitySelect :selected').text();
+                var activity = userSelected.split(",")[0].split("\(")[1];
+                var packageName =  userSelected.split(",")[1].split("\)")[0];
+                var sdkEvent = $('#MobileSdkEvent :selected').text();
+                var otherEpmValue = $("#IsEPMOnOtherMachine").is(':checked') ? $( "#EPMOnOtherMachineVal").val() : "";
+                $.ajax({
+                    type: "GET",
+                    url:'/sendMobileActivity?url='  +  otherEpmValue + '&accountName=' + $( "#accountNames option:selected" ).text() + '&epmIP=' + $("#epmIP").val()  + '&userDB=' + $("#dbUser").val() +'&passwordDB='
+                    + $("#dbPassword").val() +  '&mobileAttr=' + allMobileAttr +   '&packageName=' + packageName +
+                    '&activity=' + activity + '&sdkEvent=' + sdkEvent + '&capability_ver=' + $('#capability_ver1 :selected').text() + '&oid=' + $("#OIDValue1").val() ,
+                    data: {},
+                    dataType:'text',
+                    success: function(data) {
+                        alert (data);
+                        return data;
+                    }
+                });
+            }
+        }
+        function sendMobileAttr () {
+            if ($("#OIDValue").val().length < 1){
+                alert('Please set OID for connected mobile device');
+            } else
+            {
+                var allMobileAttr = $('textarea#mobileAttrtextarea').val()
+                var allMobileDeviceAttr = $('textarea#deviceResourcestextarea').val()
+                var otherEpmValue = $("#IsEPMOnOtherMachine").is(':checked') ? $( "#EPMOnOtherMachineVal").val() : "";
+                $.ajax({
+                    type: "GET",
+                    url:'/sendMobileAttr?url='  +  otherEpmValue + '&accountName=' + $( "#accountNames option:selected" ).text() + '&epmIP=' + $("#epmIP").val()  + '&userDB=' + $("#dbUser").val() +'&passwordDB='
+                    + $("#dbPassword").val() +  '&mobileAttr=' + allMobileAttr +   '&allMobileDeviceAttr=' + allMobileDeviceAttr +
+                    '&capability_ver=' + $('#capability_ver1 :selected').text() + '&oid=' + $("#OIDValue").val() ,
+                    data: {},
+                    dataType:'text',
+                    success: function(data) {
+                        alert (data);
+                        return data;
+                    }
+                });
+            }
+        }
+        function sendStatic () {
+            if ($("#EPIDStatic").val().length < 1){
+                alert('Please set endpointId for Active endpoint');
+            } else
+            {
+                var allStatics = $('textarea#staticData').val().replace(/&&&/g, '@@@');
+                var isSession = $("#IsSession").is(':checked') ? 1 : 0;
+                var isMac = $("#IsStaticMac").is(':checked') ? "true" : "false";
+                var otherEpmValue = $("#IsEPMOnOtherMachine").is(':checked') ? $( "#EPMOnOtherMachineVal").val() : "";
+
+                var postData = {};
+
+                postData["isMac"] = isMac;
+                postData["url"] = otherEpmValue;
+                postData["isMac"] = isMac;
+                postData["url"] = otherEpmValue;
+                postData["static"] = allStatics;
+                postData["accountName"] = $( "#accountNames option:selected" ).text();
+                postData["sessionID"] = $("#sessionID").val();
+                postData["IsSession"] = isSession;
+                postData["epmIP"] =  $("#epmIP").val();
+                postData["userDB"] = $("#dbUser").val();
+                postData["passwordDB"] =  $("#dbPassword").val();
+                postData["globalEpId"] =  $("#EPIDStatic").val() ;
+
+                $.ajax({
+                    type: "POST",
+                    url:'/sendStatic',
+                    data: {postData},
+                    dataType:'text',
+                    success: function(data) {
+                        alert (data);
+                        return data;
+                    }
+
+                });
+            }
+        }
+        function executeTuple () {
+            if ($("#endpointId").val().indexOf('EP_ID') != -1){
+                alert('Please set endpointId for Active endpoint');
+            } else {
+                var virtualEpId = $("#endpointId").val()
+                if ($("#IsTuppleSession").is(":checked") ){
+                    virtualEpId = $("#tuppleSessionID").val()
+                }
+                var isMac =  $("#IsMac").is(':checked') ? "true" : "false";
+                var IsAppInternals =  $("#IsAppInternals").is(':checked') ? "true" : "false";
+                var IsWifi =  $("#IsWifi").is(':checked') ? "true" : "false";
+                var tupleData = $("textarea#tupleData").val();
+                var otherEpmValue = $("#IsEPMOnOtherMachine").is(':checked') ? $( "#EPMOnOtherMachineVal").val() : "";
+
+                var postData = {};
+
+                postData["isWifi"] = IsWifi;
+                postData["isAppInternalUserTransactions"] = IsAppInternals;
+                postData["isMac"] = isMac;
+                postData["url"] = otherEpmValue;
+                postData["virtualEpId"] = virtualEpId;
+                postData["accountName"] = $( "#accountNames option:selected" ).text();
+                postData["data"] = tupleData;
+                postData["isWifi"] = IsWifi;
+                postData["epmIP"] =  $("#epmIP").val();
+                postData["dbUser"] = $("#dbUser").val();
+                postData["dbPassword"] =  $("#dbPassword").val();
+                postData["globalEpId"] =  $("#endpointId").val() ;
+
+                $.ajax({
+                    type: "POST",
+                    url:'/executeTuple',
+                    data: {postData},
+                    dataType:'text',
+                    success: function(data) {
+                        alert (data);
+                        return data;
+                    }
+                });
+            }
+
+        }
+
+        function editBeforeSend () {
+            if ($("#endpointId").val().indexOf('EP_ID') != -1){
+                alert('Please set endpointId for Active endpoint');
+            } else {
+                var virtualEpId = $("#endpointId").val()
+                if ($("#IsTuppleSession").is(":checked") ){
+                    virtualEpId = $("#tuppleSessionID").val()
+                }
+                var isMac =  $("#IsMac").is(':checked') ? "true" : "false";
+                var IsAppInternals =  $("#IsAppInternals").is(':checked') ? "true" : "false";
+                var IsWifi =  $("#IsWifi").is(':checked') ? "true" : "false";
+                var tupleData = $("textarea#tupleData").val().replace(/VALUE\]/g,"***").replace(/\[/g,"");
+                var otherEpmValue = $("#IsEPMOnOtherMachine").is(':checked') ? $( "#EPMOnOtherMachineVal").val() : "";
+
+                var myWindow = window.open('/editBeforeSend?isWifi=' + IsWifi + '&isAppInternalUserTransactions=' + IsAppInternals + '&isMac=' + isMac + '&url='  +  otherEpmValue + '&virtualEpId=' + virtualEpId + '&accountName=' + $( "#accountNames option:selected" ).text() + '&data=' + tupleData + '&epmIP=' +
+                    $("#epmIP").val() + '&dbUser=' + $("#dbUser").val() +'&dbPassword=' + $("#dbPassword").val() + '&globalEpId=' + $("#endpointId").val(), "Edit Tuple Before Send", "width=860,height=930");
+
+            }
+
+        }
+
+        function generateEP () {
+            var message = 'Loading...';
+            $('#loading').text(message);
+            var otherEpmValue = $("#IsEPMOnOtherMachine").is(':checked') ? $( "#EPMOnOtherMachineVal").val() : "";
+            $.ajax({
+                type: "GET",
+                url:'/generateEP?url='  +  otherEpmValue + '&numberOfSessions='  +  $( "#numberOfSessions").val() + '&device=' + $( "#EPDevice option:selected" ).text()+ '&accountName=' + $( "#EPAccount option:selected" ).text() +
+                '&multipleUsersPerSession=' + $("#multipleUsersPerSession").is(":checked") +'&agentVersion=' + $("#agentVersion").val() + '&hostname=' + $("#Hostname").val() +
+                '&epmIP=' + $("#epmIP").val() + '&EPIP=' + $("#EPIP").val() + '&dbUser=' + $("#dbUser").val() +'&dbPassword=' + $("#dbPassword").val() +'&deviceModelString=' + $("#deviceModelString").val() ,
+                data: {},
+                async: true ,
+                dataType:'text',
+                success: function(data) {
+                    $('#loading').text(data);
+                    var epid = data.split("=")[1];
+                    if (epid.indexOf('---') != -1){
+                        epid = epid.split("---")[0];
+                    }
+                    if (data.indexOf("(") >  0) {
+                        var sessionID =  data.split("(")[2].split(")")[0];
+                        $('#sessionID').val(sessionID);
+                    }
+                    if (data.indexOf("pathId=") >  0) {
+                        var pathId =  data.split("pathId=")[1].split(",")[0];
+                        $('#tuppleSessionID').val(pathId);
+                    }
+                    $('#endpointId').val(epid);
+                    $('#EPIDStatic').val(epid);
+                    $('#OIDValue').val(epid);
+                    $('#OIDValue1').val(epid);
+                    var device = $( "#EPDevice option:selected" ).text();
+                    if (device.includes("IOS")){
+                        $('#capability_ver option')[0].selected = true;
+                        $('#capability_ver1 option')[0].selected = true;
+                    }
+                    if (device.includes("Android")){
+                        $('#capability_ver option')[1].selected = true;
+                        $('#capability_ver1 option')[1].selected = true;
+                    }
+                    return data;
+                },
+                complete: function() {
+                    $('#loading').text(data);
+
+                }
+            });
+
+        }
+        function getConfiguration () {
+            var otherEpmValue = $("#IsEPMOnOtherMachine").is(':checked') ? $( "#EPMOnOtherMachineVal").val() : "";
+            var configParam =  $("#getConfigurationParameter").val();
+            var account = $("#accountNames").find(":selected").val();
+            if ($("#endpointId").val().match(/EP_ID/)){
+                alert('Please set EP ID');
+            } else {
+                window.open('/ArcTupleBuilder/getConfiguration?configParam=' + configParam + '&dbConn=' + $("#epmIP").val() + '&account=' + account + '&agentId=' + $("#endpointId").val() + '&EPMOnOtherMachineVal='  +  otherEpmValue +  '&epmIP=' + $("#epmIP").val().split(":")[0] + '&dbUser=' + $("#dbUser").val() +'&dbPassword=' + $("#dbPassword").val());
+            }
+        }
+        function startup() {
+            $("#MobileMonitorSelect").change();
+            $("#appTypes").change();
+            $("#applications").change();
+            $("#configNames").find("option[text='[[${config}]]']").attr("selected", true);
+
+            if (getQueryParam('EPMOnOtherMachineVal').length > 1){
+                $( "#EPMOnOtherMachineVal" ).val(getQueryParam('EPMOnOtherMachineVal'));
+                $( "#IsEPMOnOtherMachine").prop('checked', true);
+                $( "#divEPMOnOtherMachine" ).show();
+            }
+        }
+
+        function getQueryParam(param) {
+            location.search.substr(1)
+                .split("&")
+                .some(function(item) { // returns first occurence and stops
+                    return item.split("=")[0] == param && (param = item.split("=")[1])
+                })
+            return param;
+        }
+        $(function() {
+            $('.editBeforeSend-tooltip').tooltip({
+                items: 'a.editBeforeSend-tooltip',
+                content: '<a href="#" onclick="editBeforeSend()">Edit Before Send</a>',
+                show: "fold",
+                close: function(event, ui)
+                {
+                    ui.tooltip.hover(function()
+                        {
+                            $(this).stop(true).fadeTo(1500, 1);
+                        },
+                        function()
+                        {
+                            $(this).fadeOut('1500', function()
+                            {
+                                $(this).remove();
+                            });
+                        });
+                }
+            });
+        });
+
+        $(function() {
+            $('.getConfiguration-tooltip').tooltip({
+                items: 'a.getConfiguration-tooltip',
+                content: 'Configuration Agent Request Message Parameter (Default Integer value is 0): <input type="text" id="getConfigurationParameter" size="2" value="0" /> <a href="#" onclick="getConfiguration()">Get</a>',
+                show: "fold",
+                close: function(event, ui)
+                {
+                    ui.tooltip.hover(function()
+                        {
+                            $(this).stop(true).fadeTo(1500, 1);
+                        },
+                        function()
+                        {
+                            $(this).fadeOut('1500', function()
+                            {
+                                $(this).remove();
+                            });
+                        });
+                }
+            });
+        });
+    </script>
+</head>
+<body id="main_body"  onload="startup();" >
+
+<div id="dialog" class="dialog" style="display:none"></div>
+<div id="overlay" style="display:none"></div>
+<div id="content" style="display:none">
+</div>
+<div id="tupleContent" style="display:none">
+</div>
+
+<div id="form_container">
+
+    <form   class="appnitro" method="GET" action="#">
+        <div class="form_description">
+            <h2>         Arc Tuple Builder </h2>  <a href="/help/index.html" target="_blank" >Help Content</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a onclick="moveToGenericSender()" href="#">Generic Sender</a>
+            <p style="font-size: xx-large;color: red" th:text="${error}"></p>
+            <p>Fill in all relevant values to generate a single Arc Tuple message , or select from CM
+            <select class="element select small" id="configNames" name="configNames" >
+                <option th:each="item : ${sortedCMConfigs} " th:value='${item.value}' th:text='${item.key}'></option>
+
+            </select>&nbsp;&nbsp;&nbsp;<a href="#" onclick="testCMConenction()">Set By CM</a>
+        </div>
+        <li  >
+            <div id="divEPMOnOtherMachine" style="display: none;">EPM IP:Port = <input id="EPMOnOtherMachineVal" size="20"></input></div>
+            <label class="description" >DB:Port:SID&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                Is EPM on other machine or port is not 80? <input type="checkbox" title="Set value of EPM:Port if OTHER than DB" id="IsEPMOnOtherMachine" /></label>
+            <div>
+                <input id="epmIP" class="element text small" type="text" maxlength="255" th:value="${epmIP}"  />
+
+                <b> => Account Name </b>
+                <select class="element select small" id="accountNames" name="accountNames" >
+                    <option th:each="item : ${accountNames} " th:value='${item}' th:text='${item}'></option>
+
+                </select>
+            </div></li>
+        <li >
+            <label class="description" >DB User </label>
+            <div>
+                <input  id="dbUser" class="element text small" type="text" maxlength="255" th:value="${dbUser}" /> </div></li>
+
+        <li >
+            <label class="description" >DB Password </label>
+            <div>
+                <input  id="dbPassword" class="element text small" type="text" maxlength="255" th:value="${dbPassword}" /> <a href="#" onclick="testConenction()">Test Connection</a>
+
+            </div></li>
+        <li >
+            <label class="description" >Application Type </label>
+            <div>
+                <select class="element select medium" id="appTypes" name="appTypes" >
+                    <option th:each="item : ${appTypes} " th:value='${item}' th:text='${item}'></option>
+                </select>  </div></li>
+        <li>
+            <label class="description" >Application Name </label>
+            <div>
+                <select class="element select medium" id="applications" name="applications" ></select>
+            </div></li>
+        <li >
+            <label class="description" >Activity  Name</label>
+            <div><select class="element select medium" id="activity" name="activity" ></select>
+            </div></li>
+        <li>
+            <label class="description" >Contextuals </label>
+            <div><textarea id="contectuals"  class="element textarea small"></textarea>
+            </div>
+        </li>
+        <li>
+
+
+            <label class="description" >Measurements <a class="availability-tooltip" onclick="setAvailability()" href="#"  title="Click to set over Tuple Data textare , like.: measurements:availability=0;1,Response.... ">(Need Availability?)</a></label>
+            <div><textarea id="measurments"  class="element textarea small"></textarea>
+            </div>
+        </li>
+
+        <a href="#loginmodal" class="flatbtn" id="modaltrigger"  title="View the Tuple message in Json format(Read-only)">Message</a>
+        <a onclick="executeTuple()" class="flatbtn editBeforeSend-tooltip" id="modaltrigger" title="Fired the tuple specified over the 'Tuple generated Data' text-box.You can edit the [VALUE] for your own values.">Send Tuple</a>
+        <input id="endpointId" type="text" maxlength="10" height="60px" size="3" value="EP_ID" title="Set the end-point ID"/>
+        <a onclick="getEPMOnOtherMachineVal()" href="#EP"  class="flatbtn" id="EPtrigger" title="Click here to generate new End-point of type Server/Desktop with AG8.1/AG8.0 Version/ Remote devices or Mobile devices.You can just set your own existing End point instead.">Connect</a>
+        <a href="#Statics"  class="flatbtn" id="Staticstrigger" title="Click here to construct and send Statics.">Statics</a>
+        <a href="#mobileAttr"  class="flatbtn" id="mobileAttrtrigger" title="Click here to construct and send Mobile Attributes.">Mobile Attr</a>
+        <a href="#mobileActivityDiv"  class="flatbtn" id="mobileActivitytrigger" title="Click here to construct and send Mobile Activities.">Mobile Activity</a>
+
+        <label class="description"><a href="#" class="flatbtnsmall getConfiguration-tooltip"  title="Click to get Agent Configuration file as 'File Download'" id="getConfiguration">Get Configuration</a>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Is session?<input title="Set session ID if required" type="checkbox" id="IsTuppleSession" />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Is Mac?<input title="Set when agent is Mac" type="checkbox" id="IsMac" />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Include AppInternals ?<input title="Set to True to include the NEW appInternalUserTransactions Arc Tuple section" type="checkbox" id="IsAppInternals" />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Include Wifi ?<input title="Set to True to include Wifi section" type="checkbox" id="IsWifi" /></label>
+        <div id="divTuppleSessionID" style="display: none;">Session ID = <input id="tuppleSessionID" size="3"></input></div>
+
+        <li>
+
+            <label class="description" >Tuple generated Data </label>
+            <div><textarea id="tupleData"  class="element textarea small"></textarea>
+            </div>
+        </li>
+    </form>
+
+    <div id="loginmodal" style="display:none;"></div>
+
+
+    <!-- Statics ======================================= -->
+    <div id="Statics" style="display:none;" >
+        <h2>Statics Builder</h2>
+        <form id="form_4234"  method="post" action="/formbuilderss/view.php">
+            <ul >
+
+                <li  >
+                    <label class="description">Endpoint ID </label>
+                    <div>
+                        <input  id="EPIDStatic" class="element text small" type="text" value=""/> &nbsp;&nbsp;&nbsp;<label class="description">Is session?<input type="checkbox" id="IsSession" />
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Is Mac?<input title="Set when agent is Mac" type="checkbox" id="IsStaticMac" /></label>
+                        <div id="divsessionID" style="display: none;">Session ID = <input id="sessionID" size="3"></input>(This is embedded in the statics Json)</div>
+                    </div>
+                </li>
+                <li  >
+                    <label class="description" >Static</label>
+                    <div>
+                        <select class="element select medium"  id="StaticValues" >
+                            <option th:each="item : ${staticNames.keySet()} " th:value='${item}' th:text='${item}'></option>
+                        </select>    <input id="staticValue" type="text" maxlength="20" height="60px" size="4" value="[VALUE]"/> <a  onclick="addStatic()" class="flatbtn" id="addStatic"  title="Add the Static attribute">Add</a>
+                        &nbsp;&nbsp;<a href="#" onclick="addAllStatics()">Add All</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="#" onclick="clearAllStatics()">Clear</a>
+                    </div>
+                </li>
+                <li>
+
+                    <label class="description" >Static Attributes </label>
+                    <div><textarea id="staticData"  class="element textarea small"></textarea>
+                    </div>
+                </li><br>
+                <a onclick="sendStatic()" class="flatbtn" id="sendStatic"  title="Send the Static attribute">Send</a>
+        </form>
+    </div>
+
+    <!-- Statics ======================================= -->
+    <!--  Mobile Attr ======================================= -->
+    <div id="mobileAttr" style="display:none;" >
+        <h2>Mobile Device Resources Builder</h2>
+        <form id="form_4234"  method="post" action="/formbuilderss/view.php">
+            <ul >
+
+                <li  >
+                    <label class="description">Device Oid</label>
+                    <div>
+                        <input  id="OIDValue" class="element text small" type="text" value=""/>
+                        <label class="description">capability_ver</label>
+                        <select class="element select small"  id="capability_ver" >
+                            <option value='IOS-SDK-1.0'>IOS-SDK-1.0</option>
+                            <option value='ANDROID-SDK-1.0'>ANDROID-SDK-1.0</option>
+                        </select>
+                    </div>
+                </li>
+
+                <li>
+                    <label class="description" >Attribute</label>
+                    <div>
+                        <select class="element select medium"  id="MobileAttrValues" >
+                            <option th:each="item : ${MobileAttributes.keySet()} " th:value='${item}' th:text='${MobileAttributes.get(item)}'></option>
+                        </select>    <input id="MobileAttrValue" type="text" maxlength="20" height="60px" size="4" value="[VALUE]"/> <a  onclick="addMobileAttrValue()" class="flatbtn" id="addStatic"  title="Add a Mobile attributes">Add</a>
+                        &nbsp;&nbsp;<a href="#" onclick="addAllMobileAttrValues()">Add Default</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <a href="#" onclick="clearAllmobileAttr()">Clear Mobile Attribute</a>
+                    </div>
+                </li>
+                <li>
+
+                    <label class="description" >Mobile Attributes </label>
+                    <div><textarea id="mobileAttrtextarea"  class="element textarea small"></textarea>
+                    </div>
+                </li>
+                <li>
+                    <label class="description" >Device Resources/Application Monitoring</label>
+                    <div>
+                        <select class="element select medium"  id="deviceResources" >
+                            <option th:each="item : ${DeviceResourcesMap} " th:value='${item}' th:text='${item}'></option>
+                        </select>
+                        <select class="element select medium"  id="subDeviceResources" >
+                            <option value='2.3=Battery Level'>2.3=Battery Level</option>
+                            <option value='2.1=Is Charging'>2.1=Is Charging</option>
+                            <option value='2.4=Health'>2.4=Health</option>
+
+
+
+                        </select>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input id="DeviceResourceValue" type="text" maxlength="20" height="60px" size="4" value="[VALUE]"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a  onclick="addMobileDevice()" class="flatbtn" id="addStatic"  title="Add the Mobile device attribute">Add</a>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#" onclick="clearAllDeviceResource()">Clear Device Resources/Application Monitoring</a>
+                    </div>
+                </li>
+                <li>
+                    <label class="description" >Device Resources/Application Monitoring </label>
+                    <div><textarea id="deviceResourcestextarea"  class="element textarea small"></textarea>
+                    </div>
+                </li>
+                <a onclick="sendMobileAttr()" class="flatbtn" id="sendMobileAttr"  title="Send the Mobile attributes">Send</a>
+        </form>
+    </div>
+
+    <!-- Mobile Attr ======================================= -->
+    <!--  Mobile Activity ======================================= -->
+    <div id="mobileActivityDiv" style="display:none;" >
+        <h2>Mobile Activity Builder</h2>
+        <form id="form_4234"  method="post" action="/formbuilderss/view.php">
+            <ul >
+
+                <li  >
+                    <label class="description">Device Oid</label>
+                    <input  id="OIDValue1" class="element text small" type="text" value=""/>
+                    <label class="description">capability_ver</label>
+                    <select class="element select small"  id="capability_ver1" >
+                        <option value='IOS-SDK-1.0'>IOS-SDK-1.0</option>
+                        <option value='ANDROID-SDK-1.0'>ANDROID-SDK-1.0</option>
+                    </select>
+                </li>
+
+                <li>
+                    <label class="description" >Attribute</label>
+                    <div>
+                        <select class="element select medium"  id="MobileAttrActivityValues" >
+
+                            <option th:each="item : ${MobileAttributes.keySet()} " th:value='${MobileAttributes.get(item)}' th:text='${MobileAttributes.get(item)}'></option>
+                        </select>
+                        <input id="MobileAttrActivityValue" type="text" maxlength="20" height="60px" size="4" value="[VALUE]"/>
+                        <a  onclick="addMobileAttrActivityValue()" class="flatbtn" id="addStatic"  title="Add the Static attribute">Add</a>
+                        &nbsp;&nbsp;<a href="#" onclick="addAllMobileAttrActivityValues()">Add Default</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <a href="#" onclick="clearAllmobileAttrActivity()">Clear Mobile Attribute</a>
+                    </div>
+                </li>
+                <li>
+
+                    <label class="description" >Mobile Attributes </label>
+                    <div><textarea id="mobileAttrActivitytextarea"  class="element textarea small"></textarea>
+                    </div>
+                </li>
+
+                <li>
+                    <label class="description" >Monitor</label>
+                </li>
+                <li>
+
+
+                    <select class="element select medium"  id="MobileMonitorSelect" >
+                        <option th:each="item : ${MobileMonitorsMap} " th:value='${item}' th:text='${item}'></option>
+                    </select>
+                <li>
+                    <label class="description" >Activity pretty name(Activity and package in Parenthesis)</label>
+                </li>
+                <li>
+                    <select class="element select large"  id="MobileActivitySelect" >
+
+                    </select>
+                </li>
+                <li>
+                    <label class="description" >SDK_EVENT_TYPE&nbsp;&nbsp;&nbsp;<font size=1>(Start - End => Send 'Start' and 1 second later 'End')</font></label>
+
+                    <select class="element select medium"  id="MobileSdkEvent" >
+                        <option value='Start-End'>Start - End</option>
+                        <option value='Start'>Start</option>
+                        <option value='End'>End</option>
+                        <option value='Cancel'>Cancel</option>
+                        <option value='Error'>Error</option>
+                    </select>
+
+
+                </li>
+                <li>
+                    <a onclick="sendMobileActivity()" class="flatbtn" id="sendMobileActivity"  title="Send the Mobile Activity">Send</a>
+                </li>
+        </form>
+    </div>
+
+    <!-- Mobile Activity ======================================= -->
+    <!-- Generate End Point ======================================= -->
+    <div id="EP" style="display:none;" >
+        <h2>Generate End Point</h2>
+        <form id="form_1025799"  method="post" action="/formbuilder/view.php">
+
+            <ul >
+
+                <li >
+                    <label class="description" >EPM IP :Port </label>
+                    <div>
+                        <input  id="EPIP" class="element text medium" type="text"  th:value="${epmForAgent}" />
+                    </div>
+                </li>		<li  >
+                <label class="description">Hostname </label>
+                <div>
+                    <input  id="Hostname" class="element text medium" type="text" value=""/>
+                </div>
+                <label class="description">Device Model String (Optional) </label>
+                <div>
+                    <input  id="deviceModelString" class="element text medium" type="text" value=""/>
+                </div>
+            </li>		<li  >
+                <label class="description" >Device Type </label>
+                <div>
+                    <select class="element select large"  id="EPDevice" >
+                        <option value="2" >Desktop</option>
+                        <option value="1" >Server</option>
+                        <option value="3" >Laptop</option>
+                        <option value="4" >Windows Tablet</option>
+                        <option value="5" >Smartphone IOS</option>
+                        <option value="6" >Smartphone Android</option>
+                        <option value="7" >MAC</option>
+                        <option value="8" >Virtual Desktop</option>
+                        <option value="999" >Server+RDP session</option>
+                        <option value="999" >Server+ICA session</option>
+
+                    </select>
+                </div>
+                <div id="numberOfSessionsDiv" style="display: none;">Number Of Sessions to connect=<input id="numberOfSessions" size="2" value="1"></input>(max 10, otherwise use Jsystem)</div>
+            </li> <li  >
+                <label class="description" >Agent Version</label>
+                <div>
+                    <input  id="agentVersion" class="element text medium" type="text" value="AG9.1"/>
+                </div>
+            </li>
+                <li  >
+                    <div id="multipleUsersPerSessionDiv" style="display: none;">Connect session with Multiple Users
+                        <input title="Connect session with Multiple Users" type="checkbox" id="multipleUsersPerSession">
+                    </div>
+                </li>
+                <li  >
+                    <label class="description">Account </label>
+                    <div>
+                        <select class="element select large" id="EPAccount" >
+                            <option th:each="item : ${accountNames} " th:value='${item}' th:text='${item}'></option>
+                        </select>
+                    </div>
+                </li>
+
+                <li class="buttons">
+
+                    <input id="GenerateEPFormButton" onclick ="generateEP()" class="button_text" type="submit" name="submit" value="Generate" />
+                </li>
+            </ul>
+            <h2><div id="loading"></div></h2>
+        </form>
+    </div>
+    <!-- Generate End Point ======================================= -->
+</div>
+</body>
+
+</html>

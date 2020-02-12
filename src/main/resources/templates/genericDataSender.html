@@ -1,0 +1,261 @@
+<html>
+<head>
+
+    <script src='/javascripts/jquery-1.6.4.min.js'></script>
+    <script src='/javascripts/ArcBuilderView.js'></script>
+    <script type="text/javascript" src='/javascripts/jquery-1.9.1.min.js'></script>
+    <script src="/javascripts/jquery-ui-1.10.4.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" charset="utf-8" src='/javascripts/jquery.leanModal.min.js'></script>
+    <link rel="stylesheet" type="text/css" media="screen" href="/stylesheets/ArcBuilderView.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="/stylesheets/tags.css" />
+        <script>
+
+        function sendTuple () {
+
+            var postData = {};
+
+            postData["url"] = $("#url").val();
+            postData["opcode"] =$( "#opcode option:selected" ).text();
+            postData["data"] = $("#body").val();
+            postData["isZip"] =$("#iszip").prop('checked');
+            var json = JSON.stringify(postData);
+            $.ajax({
+                type: "POST",
+                url:'/executeMessageWithData' ,
+                data: {postData} ,
+                dataType:'text',
+                success: function(data) {
+                    $('#sendButton').after('<font color="green"><div id="setRegex">Data sent to ' + $("#url").val() + '</div></font>');
+                    $('#setRegex').delay(3000).fadeOut();
+                    $( "#response" ).val(data)
+                    return data;
+                }
+
+            });
+        }
+    function opcode () {
+        var opcode = $('#newOpcode').val();
+        $('#opcode').append('<option value=' + opcode + ' selected="selected">' + opcode +'</option>');
+    }
+    function unmonitoredUsers () {
+        $("#url").val("[[${urlPrefix}]]/Httpagent/UnmonitoredUsers?configId=-1&epId=[[${epId}]]&enabledMonitorsConfigId=0");
+        var timestamp = new Date().getTime();
+        $("#body").val("{\n" +
+            "  \"epId\": ${epId},\n" +
+            "  \"events\": [\n" +
+            "    {\n" +
+            "      \"User\": \"Sharon\",\n" +
+            "      \"Timestamp\": " + timestamp + "\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"User\": \"Gilad\",\n" +
+            "      \"Timestamp\": " + timestamp + "\n" +
+            "    }\n" +
+            "  ]\n" +
+            "}");
+        $("#opcode").val("U").change();
+        $("#iszip").prop('checked', false);
+    }
+    function CommandsState() {
+        $("#url").val("[[${urlPrefix}]]/Httpagent/remediation/CommandsState?configId=-1&epId=[[${epId}]]&enabledMonitorsConfigId=0");
+        $("#body").val("{\n" +
+            "TODO\n" +
+            "}");
+        $("#opcode").val("W").change();
+        $("#iszip").prop('checked', false);
+    }
+
+    function AckCommands() {
+        $("#url").val("[[${urlPrefix}]]/Httpagent/remediation/AckCommands?configId=-1&epId=[[${epId}]]&enabledMonitorsConfigId=0");
+        $("#body").val("{\n" +
+            " \"commandIds\": [\n" +
+            "   1,\n" +
+            "   2,\n" +
+            "   3\n" +
+            " ]\n" +
+            "}");
+        $("#opcode").val("Z").change();
+        $("#iszip").prop('checked', false);
+    }
+
+    function GetCommands() {
+        $("#url").val("[[${urlPrefix}]]/Httpagent/remediation/GetCommands?configId=-1&epId=[[${epId}]]&enabledMonitorsConfigId=0");
+        $("#body").val("{\n" +
+            " \"commandIds\": [\n" +
+            "   1,\n" +
+            "   2,\n" +
+            "   3\n" +
+            " ]\n" +
+            "}");
+        $("#opcode").val("Y").change();
+        $("#iszip").prop('checked', false);
+    }
+
+    function configuration () {
+        $("#url").val("[[${urlPrefix}]]/Httpagent/GetConfiguration?configId=-1&epId=[[${epId}]]&enabledMonitorsConfigId=0");
+        $("#body").val("1");
+        $("#opcode").val("G").change();
+        $("#iszip").prop('checked', true);
+    }
+    function report () {
+        $("#url").val("[[${urlPrefix}]]/Httpagent/Report?configId=-1&epId=[[${epId}]]&enabledMonitorsConfigId=0");
+        $("#body").val("[{\"epId\":${epId},\"singleAttrValues\": {\"32050\":\"sample@riverbed.com\",\"32090\":\"jhondo\"}}]");
+        $("#opcode").val("t").change();
+        $("#iszip").prop('checked', false);
+    }
+    function tuple () {
+        $("#url").val("[[${urlPrefix}]]/Httpagent/Tuple?configId=-1&epId=[[${epId}]]&enabledMonitorsConfigId=0");
+        $("#iszip").prop('checked', false);
+        var timestamp = new Date().getTime();
+        $("#body").val("{\n" +
+            "    \"tuples\": [\n" +
+            "        {\n" +
+            "            \"physicalId\": ${epId},\n" +
+            "            \"virtualId\": ${epId},\n" +
+            "            \"appTypeId\": 10,\n" +
+            "            \"monitorId\": 5026,\n" +
+            "            \"activityId\": 7459,\n" +
+            "            \"contextuals\": [\n" +
+            "                 {\n" +
+            "                    \"attrId\": 32092,\n" +
+            "                    \"value\": \"automation\"\n" +
+            "                }  ,\n" +
+            "                {\n" +
+            "                    \"attrId\": 32091,\n" +
+            "                    \"value\": \"1.2.3.4\"\n" +
+            "                } ,\n" +
+            "                {\n" +
+            "                    \"attrId\": 32052,\n" +
+            "                    \"value\": \"powerpoint\"\n" +
+            "                } ,\n" +
+            "                {\n" +
+            "                    \"attrId\": 32094,\n" +
+            "                    \"value\": \"999\"\n" +
+            "                } ,\n" +
+            "                {\n" +
+            "                    \"attrId\": 32053,\n" +
+            "                    \"value\": \"999\"\n" +
+            "                }  ,\n" +
+            "                {\n" +
+            "                    \"attrId\": 30,\n" +
+            "                    \"value\": \"999\"\n" +
+            "                }                  \n" +
+            "            ],\n" +
+            "            \"measurementSets\": [\n" +
+            "                {\n" +
+            "                    \"timestamp\": " + timestamp + ",\n" +
+            "                    \"measurements\": [\n" +
+            "                         {\n" +
+            "                            \"attrTypeId\": 17,\n" +
+            "                            \"value\": 17\n" +
+            "                        }  ,{\n" +
+            "                            \"attrTypeId\": 107,\n" +
+            "                            \"value\": 30\n" +
+            "                        }  ,{\n" +
+            "                            \"attrTypeId\": 29,\n" +
+            "                            \"value\": 14\n" +
+            "                        } , {\n" +
+            "                            \"attrTypeId\": 108,\n" +
+            "                            \"value\": 10\n" +
+            "                        } , {\n" +
+            "                            \"attrTypeId\": 106,\n" +
+            "                            \"value\": 28\n" +
+            "                        }, {\n" +
+            "                            \"attrTypeId\": 144,\n" +
+            "                            \"value\": 22\n" +
+            "                        }, {\n" +
+            "                            \"attrTypeId\": 105,\n" +
+            "                            \"value\": 30\n" +
+            "                        }, {\n" +
+            "                            \"attrTypeId\": 143,\n" +
+            "                            \"value\": 17\n" +
+            "                        } \n" +
+            "                    ],\n" +
+            "                     \n" +
+            "                    \"processesResources\": [\n" +
+            "                        {\n" +
+            "                            \"ProcessName\": \"process1.exe\",\n" +
+            "                            \"ProcessId\": \"123456\",\n" +
+            "                            \"measurements\": {\n" +
+            "                                \"PrcCpu\": 4.4,\n" +
+            "                                \"PrcPhysicalMemory\": 444.0,\n" +
+            "                                \"PrcVirtualMemory\": 555.9,\n" +
+            "                                \"PrcResponseCount\": 3,\n" +
+            "                                \"PrcNoResponseCount\": 1\n" +
+            "                            }\n" +
+            "                        },\n" +
+            "                        {\n" +
+            "                            \"ProcessName\": \"process2.exe\",\n" +
+            "                            \"ProcessId\": \"789333\",\n" +
+            "                            \"measurements\": {\n" +
+            "                                \"PrcCpu\": 5.4,\n" +
+            "                                \"PrcPhysicalMemory\": 441.0,\n" +
+            "                                \"PrcVirtualMemory\": 553.9\n" +
+            "                            }\n" +
+            "                        }\n" +
+            "                    ],\n" +
+            "                    \"hostResources\": {\n" +
+            "                        \"measurements\": {\n" +
+            "                            \"HrcCpuUtilization\": 1.6,\n" +
+            "                            \"HrcCpuCoreUtilization\": 1.0,\n" +
+            "                            \"HrcDiskIoRead\": 2.0,\n" +
+            "                            \"HrcDiskQueueLength\": 5.0\n" +
+            "                        }\n" +
+            "                    }                  \n" +
+            "                }\n" +
+            "            ]\n" +
+            "        }\n" +
+            "    ]\n" +
+            "}\n");
+        $("#opcode").val("x").change();
+    }
+    </script>
+</head>
+<body>
+<h2>Sending Generic Data</h2>
+Working with URL: [[${urlPrefix}]] , Account key at use:(${accountKey}), with epId:[[${epId}]] &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="/builder">Back to Tuple Builder</a>
+<div id="form_container">
+    <form   class="appnitro" method="POST" action="#">
+            <label class="description" > <h2>URL </h2></label>
+            <input id="url" class="element text large" type="text" maxlength="355"  th:value="${fullUrl}" />
+        <li>
+            <label class="description" > <h2>OpCode </h2></label>
+            <div>
+                <select id="opcode">
+                    <option value="R">R</option>
+                    <option value="t" selected>t</option>
+                    <option value="x">x</option>
+                    <option value="U">U</option>
+                    <option value="M">M</option>
+                    <option value="K">K</option>
+                    <option value="G">G</option>
+                    <option value="E">E</option>
+                    <option value="W">W</option>
+                    <option value="Y">Y</option>
+                    <option value="Z">Z</option>
+                </select>  <input id="newOpcode" size="4" type="text"  maxlength="2" value=""/><a onclick="opcode()" title="Use your opcode(not over original select options)" href="#">Use this opcode</a>
+            </div></li>
+        <li>
+            <label class="description" > <h2>Request Body </h2></label>
+            <div><textarea id="body"  class="element textarea xlargemed"></textarea>
+            </div>
+        </li>
+        <li>
+            <label class="description" > <h2>Response  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Is Zip Response <input type="checkbox" id="iszip" name="iszip" value="false"></h2> </label>
+            <div><textarea id="response"  class="element textarea xlargemed"></textarea>
+            </div>
+        </li>
+        <a onclick="sendTuple()" class="flatbtn" id="sendButton" title="Send the message data while converting using specified opCode">Send Message</a>
+    </form>
+</div>
+
+<a onclick="GetCommands()"   href="#">GetCommands</a>
+<a onclick="AckCommands()"  href="#">AckCommands</a>
+<a onclick="CommandsState()"  href="#">CommandsState</a> <br>
+<a onclick="report()"  title="Fill sample for Static report" href="#">Session Static sample</a>
+<a onclick="tuple()"  title="Fill sample for Tuple message" href="#">Tuple sample</a>
+<a onclick="configuration()"  title="Fill sample for Get Configuration message" href="#">Get Configuration</a>
+<a onclick="unmonitoredUsers()"  title="Fill sample forunmonitoredUsers message" href="#">Unmonitored Users</a>
+</body>
+</html>

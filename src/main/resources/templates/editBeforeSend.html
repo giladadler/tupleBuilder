@@ -1,0 +1,58 @@
+<html>
+<head>
+
+    <script src='/javascripts/jquery-1.6.4.min.js'></script>
+    <script src='/javascripts/ArcBuilderView.js'></script>
+    <script type="text/javascript" src='/javascripts/jquery-1.9.1.min.js'></script>
+    <script src="/javascripts/jquery-ui-1.10.4.js" type="text/javascript" charset="utf-8"></script>
+    <link rel="stylesheet" type="text/css" media="screen"
+          href="/stylesheets/ArcBuilderView.css" />
+
+    <script>
+
+        function sendTuple () {
+
+            var postData = {};
+
+            postData["url"] = $("#url").val();
+            postData["epmIP"] = $("#epmIP").val();
+            postData["accountName"] = $("#accountName").val();
+            postData["userDb"] = $("#dbUser").val();
+            postData["passswordDb"] = $("#dbPassword").val();
+            postData["isMac"] = $("#isMac").val();
+            postData["globalEpId"] = $("#globalEpId").val();
+            postData["virtualEpId"] = $("#virtualEpId").val();
+            postData["data"] = $("#tupleData").val();
+            var json = JSON.stringify(postData);
+            $.ajax({
+                type: "POST",
+                url:'/executeTupleWithReadyData' ,
+                data: {postData} ,
+                dataType:'text',
+                success: function(data) {
+                    alert (data);
+                    return data;
+                }
+
+            });
+        }
+    </script>
+</head>
+<body>
+<h2>Sending Tuple to [[${epmIP.split(":")[0]}]]  on EP Id [[${globalEpId}]] ([[${accountName}]]) </h2>
+<form>
+    <input type="hidden" id="epmIP" th:value='${epmIP}'  >
+    <input type="hidden" id="accountName" th:value="${accountName}">
+    <input type="hidden" id="isMac" th:value="${isMac}">
+    <input type="hidden" id="dbUser" th:value="${dbUser}">
+    <input type="hidden" id="dbPassword" th:value="${dbPassword}">
+    <input type="hidden" id="url" th:value="${url}">
+    <input type="hidden" id="globalEpId" th:value="${globalEpId}">
+    <input type="hidden" id="virtualEpId" th:value="${virtualEpId}">
+    <textarea id="tupleData" rows="55" cols="100"  >[[${data}]]</textarea><br>
+    <a onclick="sendTuple()" class="flatbtn" id="modaltrigger" title="Fired the tuple specified over the 'Tuple generated Data' text-box.You can edit the [VALUE] for your own values.">Send Tuple</a>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <a onclick="javascript:window.close()" class="flatbtn" id="modaltrigger" >Close</a>
+</form>
+</body>
+</html>

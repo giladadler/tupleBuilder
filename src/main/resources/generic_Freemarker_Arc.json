@@ -1,0 +1,214 @@
+{
+    "tuples": [
+        {
+            "physicalId": ${PHYSICAL_ID_PLACE_HOLDER},
+            "virtualId": ${VIRTUAL_ID_PLACE_HOLDER},
+            "appTypeId": ${APP_TYPE_ID_PLACE_HOLDER},
+            "monitorId": ${MONITOR_ID_PLACE_HOLDER},
+            "activityId": ${ACTIVITY_ID_PLACE_HOLDER},
+            "contextuals": [
+                        <#if CONTEXTUAL_1??> {
+                        "attrId": ${CONTEXTUAL_1},
+                        "value": "${CONTEXTUAL_1_VALUE}"
+                        }</#if>  <#if CONTEXTUAL_2??>,
+                        {
+                        "attrId": ${CONTEXTUAL_2},
+                        "value": "${CONTEXTUAL_2_VALUE}"
+                        }</#if> <#if CONTEXTUAL_3??>,
+                        {
+                        "attrId": ${
+                        CONTEXTUAL_3
+                        },
+                        "value": "${CONTEXTUAL_3_VALUE}"
+                        }</#if> <#if CONTEXTUAL_4??>,
+                        {
+                        "attrId": ${
+                        CONTEXTUAL_4
+                        },
+                        "value": "${CONTEXTUAL_4_VALUE}"
+                        }</#if> <#if CONTEXTUAL_5??>,
+                        {
+                        "attrId": ${CONTEXTUAL_5},
+                        "value": "${CONTEXTUAL_5_VALUE}"
+                        }</#if>  <#if CONTEXTUAL_6??>,
+                        {
+                        "attrId": ${
+                        CONTEXTUAL_6
+                        },
+                        "value": "${CONTEXTUAL_6_VALUE}"
+                        }</#if>  <#if CONTEXTUAL_7??>,
+                        {
+                        "attrId": ${CONTEXTUAL_7
+                        },
+                        "value": "${CONTEXTUAL_7_VALUE}"
+                        }</#if>  <#if CONTEXTUAL_8??>,
+                        {
+                        "attrId": ${
+                        CONTEXTUAL_8
+                        },
+                        "value": "${CONTEXTUAL_8_VALUE}"
+                        }</#if>   <#if CONTEXTUAL_9??>,
+                        {
+                        "attrId": ${
+                        CONTEXTUAL_9
+                        },
+                        "value": "${CONTEXTUAL_9_VALUE}"
+                        }</#if>   <#if CONTEXTUAL_10??>,
+                        {
+                        "attrId": ${
+                        CONTEXTUAL_10},
+                        "value": "${CONTEXTUAL_10_VALUE}"
+                        }</#if>   <#if CONTEXTUAL_11??>,
+                        {
+                        "attrId": ${CONTEXTUAL_11},
+                        "value": "${CONTEXTUAL_11_VALUE}"
+                        }</#if>   <#if CONTEXTUAL_12??>,
+                        {
+                        "attrId": ${CONTEXTUAL_12},
+                        "value": "${CONTEXTUAL_12_VALUE}"
+                        }</#if>   <#if CONTEXTUAL_13??>,
+                        {
+                        "attrId": ${
+                        CONTEXTUAL_13
+                        },
+                        "value": "${CONTEXTUAL_13_VALUE}"
+                        }</#if>   <#if CONTEXTUAL_14??>,
+                        {
+                        "attrId": ${
+                        CONTEXTUAL_14
+                        },
+                        "value": "${CONTEXTUAL_14_VALUE}"
+                        }</#if>   <#if CONTEXTUAL_15??>,
+                        {
+                        "attrId": ${CONTEXTUAL_15},
+                        "value": "${CONTEXTUAL_15_VALUE}"
+                        }</#if>   <#if CONTEXTUAL_16??>,
+                        {
+                        "attrId": ${
+                        CONTEXTUAL_16
+                        },
+                        "value": "${CONTEXTUAL_16_VALUE}"
+                        }</#if>   <#if CONTEXTUAL_17??>,
+                        {
+                        "attrId": ${CONTEXTUAL_17
+                        },
+                        "value": "${CONTEXTUAL_17_VALUE}"
+                        }</#if>
+            ],
+            "measurementSets": [
+                {
+                    "timestamp": ${TIMESTAMP_PLACE_HOLDER},
+                    "measurements": [
+                        <#if MEASURMENT_1??> {
+                            "attrTypeId": ${MEASURMENT_1},
+                            "value": ${MEASURMENT_1_VALUE}
+                        }</#if> <#if MEASURMENT_2??> ,{
+                            "attrTypeId": ${MEASURMENT_2},
+                            "value": ${MEASURMENT_2_VALUE}
+                        }</#if> <#if MEASURMENT_3??> ,{
+                            "attrTypeId": ${MEASURMENT_3},
+                            "value": ${MEASURMENT_3_VALUE}
+                        }</#if> <#if MEASURMENT_4??>, {
+                            "attrTypeId": ${MEASURMENT_4},
+                            "value": ${MEASURMENT_4_VALUE}
+                        }</#if> <#if MEASURMENT_5??>, {
+                            "attrTypeId": ${MEASURMENT_5},
+                            "value": ${MEASURMENT_5_VALUE}
+                        }</#if><#if MEASURMENT_6??>, {
+                            "attrTypeId": ${MEASURMENT_6},
+                            "value": ${MEASURMENT_6_VALUE}
+                        }</#if><#if MEASURMENT_7??>, {
+                            "attrTypeId": ${MEASURMENT_7},
+                            "value": ${MEASURMENT_7_VALUE}
+                        }</#if><#if MEASURMENT_8??>, {
+                            "attrTypeId": ${MEASURMENT_8},
+                            "value": ${MEASURMENT_8_VALUE}
+                        }</#if><#if MEASURMENT_9??>, {
+                            "attrTypeId": ${MEASURMENT_9},
+                            "value": ${MEASURMENT_9_VALUE}
+                        }</#if> <#if MEASURMENT_10??>, {
+                            "attrTypeId": ${MEASURMENT_10},
+                            "value": ${MEASURMENT_10_VALUE}
+                        }</#if><#if MEASURMENT_11??>, {
+                            "attrTypeId": ${MEASURMENT_11},
+                            "value": ${MEASURMENT_11_VALUE}
+                        }</#if><#if MEASURMENT_12??>, {
+                            "attrTypeId": ${MEASURMENT_12},
+                            "value": ${MEASURMENT_12_VALUE}
+                        }</#if><#if MEASURMENT_13??>, {
+                            "attrTypeId": ${MEASURMENT_13},
+                            "value": ${MEASURMENT_13_VALUE}
+                        }</#if>
+                    ],
+                    <#if Availability??>"availability": "${Availability}",</#if> 
+                    "processesResources": [
+                        {
+                            "ProcessName": "process1.exe",
+                            "ProcessId": "123456",
+                            "measurements": {
+                                "PrcCpu": 4.4,
+                                "PrcPhysicalMemory": 444.0,
+                                "PrcVirtualMemory": 555.9,
+                                "PrcResponseCount": 3,
+                                "PrcNoResponseCount": 1
+                            }
+                        },
+                        {
+                            "ProcessName": "process2.exe",
+                            "ProcessId": "789333",
+                            "measurements": {
+                                "PrcCpu": 5.4,
+                                "PrcPhysicalMemory": 441.0,
+                                "PrcVirtualMemory": 553.9
+                            }
+                        }
+                    ],
+                    "hostResources": {
+                        "measurements": {
+                            "HrcCpuUtilization": 1.6,
+                            "HrcCpuCoreUtilization": 1.0,
+                            "HrcDiskIoRead": 2.0,
+                            "HrcDiskQueueLength": 5.0
+                        }
+                    }<#if appInternalUserTransactions??>,
+                            "appInternalUserTransactions": [{
+                                            "userId": "u_yuepbkaj7givji4g5v",
+                                            "pages": [{
+                                                            "pageId": "p_e3tl1fzavqhivjnqpvr",
+                                                            "trxIds": ["a2_fbbf84b8-e266-4432-bb09-5960877c1cc9",
+                                                            "a2_fbbf84b8-e266-8882-bb09-5960877c1cc9"]
+                                            },
+                                            {
+                                                            "pageId": "p_ttt3tl1fzavqhivjnqpvr",
+                                                            "trxIds": ["a2_fbbf84b8-e276-4432-bb09-5960877c1cc9"]
+                                            }]
+                            },
+                            {
+                                            "userId": "",
+                                            "pages": [{
+                                                            "pageId": "",
+                                                            "trxIds": ["a2_fbbf84b8-e266-4432-bb09-5960877c1cc9",
+                                                            "a2_fbbf84b8-e266-8882-bb09-5960877c1cc9"]
+                                            },
+                                            {
+                                                            "pageId": "p_vdt3tl1fzavqhivjnqpvr",
+                                                            "trxIds": ["a2_fbbf84b8-e276-4432-bb09-5960877c1cc9"]
+                                            }]
+                            }]</#if><#if wifiSection??>,
+                        "wifi": {
+                        "SSID": "Aternity-WiFi",
+                        "BSSID": "586D8F31A974",
+                        "Channel": "11",
+                        "measurements": {
+                            "SignalStrength": 99,
+                            "MaxBitrate": 101.85
+                            }
+                        }
+
+                 </#if>
+                  
+                }
+            ]
+        }
+    ]
+}

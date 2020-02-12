@@ -1,0 +1,156 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+<title>HTML5 localStorage Example</title>
+<meta charset="UTF-8">
+<meta name="description" content="Free Web tutorials">
+<meta name="keywords" content="HTML,CSS">
+<meta name="author" content="WebCodeGeeks.com">
+<script src="Storage.js"></script>
+<link rel="stylesheet" href="StorageStyle.css">
+</head>
+<body onload="showALL()">
+	<h1>Generate End-point</h1>
+	<form name=ShoppingList>
+		<div id="xPlayArea">
+			<table>
+				<tr>
+
+					<td><b>Hostname:</b><input type=text name='hostname'></td>
+					<td><b>Version:</b><input type=text name='agentVersion' value='AG9.1'></td>
+					<td><b>Type:</b><select class="element select large" id="agentType"> 
+							<option value="Desktop">Desktop</option>
+							<option value="Server">Server</option>
+							<option value="Laptop">Laptop</option>
+
+
+		</select></td>
+					<td><b>Account:</b><select class="element select large" id="account"> 
+			 
+	            		<option value="Default account">Default account</option>
+	           
+	            		<option value="Demo">Demo</option>
+	           
+	            		<option value="pakado">pakado</option>
+	           
+
+		</select></td>
+		<td><b>Set All Statics<input type="checkbox" title="Set All defalt statics" id="defaultStatics" /></td>
+					<td><b> <input type=button value="Add Endpoint"   onclick="AddItem()"> </td>
+
+				</tr>
+
+				
+			</table>
+
+			
+			<h1>Statics</h1>
+	
+			<table>
+				<tr>
+
+					<td><b>Endpoint number:</b><select class="element select large" id="staticEPNumber"> 
+		</select></td>
+					
+					<td><b>Statics:</b><select class="element select medium" id="StaticValues">
+					   
+			            		<option value="AD Department">AD Department</option>
+			           
+			            		<option value="AD Office">AD Office</option>
+			           
+			            		<option value="AD Title">AD Title</option>
+			           			            		
+			            		<option value="CPU Cores">CPU Cores</option>
+			           
+			            	
+			           
+				</select></td>
+				<td><b>Value:</b><input type=text name='staticValue' ></td>
+					<td><b> <input type=button value="Add Statics"   onclick="AddStatic()"> </td>
+
+				</tr>
+
+				
+			</table>
+			<h1>Tuples</h1>
+	
+			<table>
+				<tr>
+
+					<td><b>Endpoint number:</b><input type=text name=xxx></td>
+					
+					<td><b>Application:</b><select class="element select medium" id="appTypes" name="appTypes">    
+			 
+	            		<option value="AgentHealthStatus">AgentHealthStatus</option>
+	         
+	            		<option value="BootProfiler">BootProfiler</option>
+	         
+	            		<option value="Citrix">Citrix</option>
+	         
+	            		<option value="ClientServer">ClientServer</option>
+	         
+	            		<option value="DNS">DNS</option>
+	         
+	            		<option value="DesktopUsage">DesktopUsage</option>
+	         
+	            		<option value="DumpAnalyzer">DumpAnalyzer</option>
+	         
+	            		<option value="EventLog">EventLog</option>
+	         
+	            		<option value="GenericPlugin">GenericPlugin</option>
+	         
+	            		<option value="HTML">HTML</option>
+	         
+	            		<option value="HTTP">HTTP</option>
+	         
+	            		<option value="HostResources">HostResources</option>
+	         
+	            		<option value="Java">Java</option>
+	         
+	            		<option value="Launch">Launch</option>
+	         
+	            		<option value="MacDeviceMetrics">MacDeviceMetrics</option>
+	         
+	            		<option value="PCoIP">PCoIP</option>
+	         
+	            		<option value="ProcessResources">ProcessResources</option>
+	         
+	            		<option value="RDP">RDP</option>
+	         
+	            		<option value="RDP_TCP">RDP_TCP</option>
+	         
+	            		<option value="RegistryReader">RegistryReader</option>
+	         
+	            		<option value="VdiHyperVisor">VdiHyperVisor</option>
+	         
+	            		<option value="VdiVM">VdiVM</option>
+	         
+	            		<option value="WMI">WMI</option>
+	         
+	            		<option value="WebPageLoad">WebPageLoad</option>
+	         
+	            		<option value="WebPageMonitoring">WebPageMonitoring</option>
+	         
+	            		<option value="WebUsage">WebUsage</option>
+	         
+        </select></td>
+				<td><b>Monitor:</b><<select class="element select medium" id="applications" name="applications"><option value="Acrobat Reader (Win32)">Acrobat Reader (Win32)</option><option value="Activator – Workflow">Activator – Workflow</option><option value="Internet Explorer (UX)">Internet Explorer (UX)</option><option value="Lotus Notes (Win32)">Lotus Notes (Win32)</option><option value="Microsoft Excel (Win32)">Microsoft Excel (Win32)</option><option value="Microsoft Excel 2007">Microsoft Excel 2007</option><option value="Microsoft Excel 2010">Microsoft Excel 2010</option><option value="Microsoft Excel 2013">Microsoft Excel 2013</option><option value="Microsoft Excel 2016">Microsoft Excel 2016</option><option value="Microsoft Outlook (Win32)">Microsoft Outlook (Win32)</option><option value="Microsoft Outlook 2007">Microsoft Outlook 2007</option><option value="Microsoft Outlook 2010">Microsoft Outlook 2010</option><option value="Microsoft Outlook 2013">Microsoft Outlook 2013</option><option value="Microsoft Outlook 2016">Microsoft Outlook 2016</option><option value="Microsoft Powerpoint (Win32)">Microsoft Powerpoint (Win32)</option><option value="Microsoft PowerPoint 2007">Microsoft PowerPoint 2007</option><option value="Microsoft PowerPoint 2010">Microsoft PowerPoint 2010</option><option value="Microsoft PowerPoint 2013">Microsoft PowerPoint 2013</option><option value="Microsoft PowerPoint 2016">Microsoft PowerPoint 2016</option><option value="Microsoft Project 2007 (Win32)">Microsoft Project 2007 (Win32)</option><option value="Microsoft Word (Win32)">Microsoft Word (Win32)</option><option value="Microsoft Word 2007">Microsoft Word 2007</option><option value="Microsoft Word 2010">Microsoft Word 2010</option><option value="Microsoft Word 2013">Microsoft Word 2013</option><option value="Microsoft Word 2016">Microsoft Word 2016</option><option value="Mozilla Firefox (UX)">Mozilla Firefox (UX)</option></select></td>
+				<td><b>Activity:</b><select class="element select medium" id="activity" name="activity"><option value="Create">Create</option><option value="Save">Save</option><option value="Launch">Launch</option><option value="Open">Open</option></select></td>
+
+				</tr>
+
+				
+			</table>
+		<div id="items_table">
+			<h2>Scenario  </h2>
+			<table id=list></table>
+			<table id=statics></table>
+			<p>
+				<label><input type=button value="Clear" onclick="ClearAll()">
+					<i>* Removes all items</i></label>
+			</p>
+		</div>
+	</form>
+
+</body>
+</html>
