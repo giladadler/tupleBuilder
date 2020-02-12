@@ -46,7 +46,7 @@ node ('docker') {
             docker run -d --name ${tupleBuilder} \
             --restart=unless-stopped \
             -e TZ=Asia/Jerusalem \
-            -t --publish 9200:9200 \
+            -t --publish 9300:9300 \
             docker-registry.lab.aternity.com/${tupleBuilder}:${tagName} \
             """
 
