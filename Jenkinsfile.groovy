@@ -15,19 +15,19 @@ node ('docker') {
 
     stage 'build docker'
 
-//    def localRepositoryUrl = "https://${env.DOCKER_LOCAL_REGISTRY}"
-//
-//    sh "shopt -s dotglob && cp docker/* ."
-//
-//    String tupleBuilder = "tuple-builder"
-//    String buildNumber = "2.0." + currentBuild.id
-//    currentBuild.displayName = buildNumber
-//    String tagName = "TupleBuilder_${buildNumber}"
-//
-//    String fullLocalDockerUri = "docker-registry.lab.aternity.com/${tupleBuilder}:${tagName}"
-//    sh "docker login -u admin -p admin ${localRepositoryUrl}"
-//    sh "docker build -t ${fullLocalDockerUri} ."
-//    sh "docker push ${fullLocalDockerUri}"
+    def localRepositoryUrl = "https://${env.DOCKER_LOCAL_REGISTRY}"
+
+    sh "shopt -s dotglob && cp docker/* ."
+
+    String tupleBuilder = "tuple-builder"
+    String buildNumber = "2.0." + currentBuild.id
+    currentBuild.displayName = buildNumber
+    String tagName = "TupleBuilder_${buildNumber}"
+
+    String fullLocalDockerUri = "docker-registry.lab.aternity.com/${tupleBuilder}:${tagName}"
+    sh "docker login -u admin -p admin ${localRepositoryUrl}"
+    sh "docker build -t ${fullLocalDockerUri} ."
+    sh "docker push ${fullLocalDockerUri}"
 
     stage 'run tupleBuilder app'
 
