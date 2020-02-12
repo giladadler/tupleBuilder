@@ -11,9 +11,7 @@ node ('docker') {
 
     // create the third-party 'lib' folder
     def mvnHome = tool 'M3'
-
-    sh "${mvnHome}/bin/mvn install:install-file  -Dfile=${basedir}/src/main/simulator/simulator-8.0-jar-with-dependencies.jar -DgroupId=com.aternity.agentSimulator -DartifactId=simulator -Dversion=1.0 -Dpackaging=jar -DgeneratePom=true"
-    sh "${mvnHome}/bin/mvn -B  package"
+    sh "${mvnHome}/bin/mvn -B clean package"
 
     stage 'build docker'
 
