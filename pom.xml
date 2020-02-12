@@ -68,14 +68,14 @@
 			<artifactId>simulator</artifactId>
 			<version>1.0</version>
 			<scope>system</scope>
-			<systemPath>${pom.basedir}/src/main/simulator/simulator-8.0-jar-with-dependencies.jar</systemPath>
+			<systemPath>${basedir}/src/main/simulator/simulator-8.0-jar-with-dependencies.jar</systemPath>
 		</dependency>
         <dependency>
             <groupId>com.simulator</groupId>
             <artifactId>simulator</artifactId>
             <version>1.0</version>
             <scope>system</scope>
-            <systemPath>${pom.basedir}/src/main/simulator/_Aternity_server-epm-8.1-SNAPSHOT.jar</systemPath>
+            <systemPath>${basedir}/src/main/simulator/_Aternity_server-epm-8.1-SNAPSHOT.jar</systemPath>
         </dependency>
 
 		<dependency>
