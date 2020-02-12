@@ -20,7 +20,7 @@ node ('docker') {
     sh "shopt -s dotglob && cp docker/* ."
 
     String tupleBuilder = "tuple-builder"
-    String buildNumber = "2.0." + currentBuild.id
+    String buildNumber = "1.0." + currentBuild.id
     currentBuild.displayName = buildNumber
     String tagName = "TupleBuilder_${buildNumber}"
 
@@ -31,29 +31,29 @@ node ('docker') {
 
     stage 'run tupleBuilder app'
 
-//        node('automation-services') {
-//
-//            sh "docker pull docker-registry.lab.aternity.com/${tupleBuilder}:${tagName}"
-//
-//            String result = runShell("docker ps -a | grep ${tupleBuilder}")
-//
-//            if (result.contains("${tupleBuilder}")) { // if service exists remove it
-//                sh "docker rm -f ${tupleBuilder}"
-//            }
-//
-//            // start new servcie
-//            sh script: """ \
-//            docker run -d --name ${tupleBuilder} \
-//            --restart=unless-stopped \
-//            -e TZ=Asia/Jerusalem \
-//            -t --publish 9200:9200 \
-//            docker-registry.lab.aternity.com/${tupleBuilder}:${tagName} \
-//            """
-//
-//            String listServiceOutput = sh(returnStdout: true, script: "docker ps | grep ${tupleBuilder} | grep \"Up \"")
-//            if (!listServiceOutput.contains(tupleBuilder))
-//                error "failed to run ${tupleBuilder} service. see service ls command output."
-//    }
+        node('automation-services') {
+
+            sh "docker pull docker-registry.lab.aternity.com/${tupleBuilder}:${tagName}"
+
+            String result = runShell("docker ps -a | grep ${tupleBuilder}")
+
+            if (result.contains("${tupleBuilder}")) { // if service exists remove it
+                sh "docker rm -f ${tupleBuilder}"
+            }
+
+            // start new servcie
+            sh script: """ \
+            docker run -d --name ${tupleBuilder} \
+            --restart=unless-stopped \
+            -e TZ=Asia/Jerusalem \
+            -t --publish 9200:9200 \
+            docker-registry.lab.aternity.com/${tupleBuilder}:${tagName} \
+            """
+
+            String listServiceOutput = sh(returnStdout: true, script: "docker ps | grep ${tupleBuilder} | grep \"Up \"")
+            if (!listServiceOutput.contains(tupleBuilder))
+                error "failed to run ${tupleBuilder} service. see service ls command output."
+    }
 
     deleteDir()
 
