@@ -5,6 +5,7 @@ import com.aternity.tupleBuilder.ArcTuple.ArcTupleMessage;
 import com.aternity.tupleBuilder.mobile.MobileDeviceAttributes;
 import com.aternity.tupleBuilder.mobile.MobileDeviceResources;
 import com.aternity.tupleBuilder.mobile.MobileMonitors;
+import com.aternity.tupleBuilder.utils.BuildUtil;
 import com.aternity.tupleBuilder.utils.DBUtil;
 import com.aternity.tupleBuilder.utils.HttpUtil;
 import org.apache.commons.io.FileUtils;
@@ -162,6 +163,9 @@ public class ArcTupleBuilder {
         model.addAttribute("error", error);
         model.addAttribute("config", config);
         model.addAttribute("sortedCMConfigs", sortedCMConfigs);
+        String build = BuildUtil.getBuild();
+        model.addAttribute("build", build);
+
     return "tupleBuilderPage";
     }
 

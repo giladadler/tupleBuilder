@@ -19,10 +19,18 @@ node ('docker') {
 
     sh "shopt -s dotglob && cp docker/* ."
 
+    def dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm")
+    def date = new Date()
+    String buildTime = dateFormat.format(date)
+
     String tupleBuilder = "tuple-builder"
     String buildNumber = "1.0." + currentBuild.id
     currentBuild.displayName = buildNumber
     String tagName = "TupleBuilder_${buildNumber}"
+
+    sh "echo build.version=${buildNumber} > build.properties"
+    sh "echo build.timestamp=${buildTime} >> build.properties"
+
 
     String fullLocalDockerUri = "docker-registry.lab.aternity.com/${tupleBuilder}:${tagName}"
     sh "docker login -u admin -p admin ${localRepositoryUrl}"
