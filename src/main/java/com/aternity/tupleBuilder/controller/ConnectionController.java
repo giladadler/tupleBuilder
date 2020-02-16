@@ -4,6 +4,8 @@ import com.aternity.agentSimulator.simulator.commManager.http.HttpCommManager;
 import com.aternity.tupleBuilder.ArcTuple.BasicArcMessage;
 import com.aternity.tupleBuilder.ArcTuple.HttpComm;
 import com.aternity.tupleBuilder.ArcTuple.OutgoingJsonMessage;
+import com.aternity.tupleBuilder.mobile.MobileBuilder;
+import com.aternity.tupleBuilder.mobile.MobileDeviceAttributes;
 import com.aternity.tupleBuilder.mobile.MobileDeviceResources;
 import com.aternity.tupleBuilder.utils.RandUtil;
 import com.aternity.tupleBuilder.utils.SslHelper;
@@ -93,6 +95,69 @@ public class ConnectionController {
         } else {
             return("Send Data to " + url + "  " + data + " =====>>>>> Response OK !!!");
         }
+    }
+
+    @RequestMapping(value = "/sendMobileActivity", method = RequestMethod.GET)
+    public String sendMobileActivity(@RequestParam(name="epmIP", required=false) String epmIP,
+                                          @RequestParam(name="userDB", required=false) String userDB,
+                                          @RequestParam(name="passwordDB", required=false) String passwordDB,
+                                          @RequestParam(name="mobileAttr", required=false) String mobileAttr,
+                                          @RequestParam(name="packageName", required=false) String packageName,
+                                          @RequestParam(name="url", required=false) String epmURL,
+                                          @RequestParam(name="activity", required=false) String activity,
+                                          @RequestParam(name="oid", required=false) String device_id,
+                                          @RequestParam(name="capability_ver", required=false) String capability_ver,
+                                          @RequestParam(name="sdkEvent", required=false) String sdkEvent) throws Exception {
+
+        boolean isSSL = epmURL.contains(":443");
+        epmURL = epmIP.split(":")[0];
+        HashMap<String, String> mobileDeviceAttributes  = new HashMap<>();
+        try {
+            mobileDeviceAttributes = MobileDeviceAttributes.getMobileAttributes(epmIP, userDB, passwordDB);
+        } catch (Exception e) {}
+
+        String message = MobileBuilder.sendMobileActivityEvent(mobileDeviceAttributes, epmURL, capability_ver, device_id, mobileAttr,
+                packageName, activity, sdkEvent, isSSL);
+        if (!message.contains("Got Exception")) {
+            if (sdkEvent.contains("Start") && sdkEvent.contains("End")) {
+                System.out.println("Mobile Start & End => wait 1 second and send End event !!!!");
+                Thread.sleep(1000);
+                MobileBuilder.sendMobileActivityEvent(mobileDeviceAttributes, epmURL, capability_ver, device_id, mobileAttr, packageName,
+                        activity, "End", isSSL);
+            }
+            return("Send mobile Activity Event " + activity + " to device_id " + device_id + " OK !!!");
+        } else {
+            return("FAIL to Send mobile Activity Event to device_id " + device_id + " !!!");
+        }
+    }
+
+    @RequestMapping(value = "/sendMobileAttr", method = RequestMethod.GET)
+    public  String sendMobileAttr(@RequestParam(name="epmIP", required=false) String epmIP,
+                                      @RequestParam(name="userDB", required=false) String userDB,
+                                      @RequestParam(name="passwordDB", required=false) String passwordDB,
+                                      @RequestParam(name="mobileAttr", required=false) String mobileAttr,
+                                      @RequestParam(name="url", required=false) String epmURL,
+                                      @RequestParam(name="oid", required=false) String device_id,
+                                      @RequestParam(name="allMobileDeviceAttr", required=false) String allMobileDeviceAttr,
+                                      @RequestParam(name="capability_ver", required=false) String capability_ver) throws Exception {
+
+        boolean isSSL = epmURL.contains(":443");
+        epmURL = epmIP.split(":")[0];
+        HashMap<String, String> mobileDeviceAttributes = new HashMap<>();;
+        try {
+            mobileDeviceAttributes = MobileDeviceAttributes.getMobileAttributes(epmIP, userDB, passwordDB);
+        } catch (Exception e) {
+            return("sendMobileAttr: failed");
+        }
+
+        if (allMobileDeviceAttr.length() == 0) { // No Device Resources data
+            return("Send mobile attributes " + mobileAttr + " to device_id " + device_id + " ==>"
+                    + MobileBuilder.sendMobileAttr(mobileDeviceAttributes, epmURL, capability_ver, device_id, mobileAttr, isSSL));
+        } else { // send with AppEvent
+            return("Send mobile event to device_id " + device_id + "  => " + MobileBuilder
+                    .sendMobileAppEvent(mobileDeviceAttributes, epmURL, capability_ver, device_id, mobileAttr, allMobileDeviceAttr, isSSL));
+        }
+
     }
 
     @RequestMapping(value = "/sendStatic", method = RequestMethod.POST)
